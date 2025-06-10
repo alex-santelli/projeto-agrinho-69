@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Festejando a Conexão Campo e Cidade</title>
+  <style>
+    /* Cores padronizadas */
+    :root {
+      --darkest: #0A1A17;
+      --dark: #1F3F30;
+      --medium: #235842;
+      --medium-light: #388364;
+      --light: #68CBA2;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--darkest);
+      color: var(--light);
+      font-size: 16px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Cabeçalho fixo e fino */
+    header.header-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: var(--medium);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      z-index: 9999;
+      user-select: none;
+    }
+    .header-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 20px;
+    }
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--light);
+      flex-shrink: 0;
+    }
+    .logo-title img {
+      height: 40px;
+      width: auto;
+      user-select: none;
+      pointer-events: none;
+    }
+    .logo-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+      user-select: none;
+    }
+    /* Nav links */
+    nav.nav-links {
+      display: flex;
+      gap: 18px;
+      flex-grow: 1;
+      justify-content: center;
+    }
+    nav.nav-links a {
+      color: var(--light);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+    nav.nav-links a:hover,
+    nav.nav-links a:focus {
+      background-color: var(--light);
+      color: var(--darkest);
+      outline: none;
+    }
+
+    /* Busca e criar conta */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .header-actions input[type="search"] {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.9rem;
+      width: 150px;
+      transition: box-shadow 0.3s;
+    }
+    .header-actions input[type="search"]:focus {
+      outline: none;
+      box-shadow: 0 0 8px var(--light);
+    }
+    .btn-login {
+      background-color: var(--light);
+      color: var(--darkest);
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .btn-login:hover,
+    .btn-login:focus {
+      background-color: var(--medium-light);
+      color: var(--light);
+      outline: none;
+    }
+
+    /* Painel acessibilidade fixo */
+    #accessibility-panel {
+      position: fixed;
+      top: 75px;
+      right: 10px;
+      background-color: var(--medium);
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.7);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10000;
+      user-select: none;
+    }
+    #accessibility-panel button {
+      background-color: var(--light);
+      border: none;
+      padding: 6px 10px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    #accessibility-panel button:hover,
+    #accessibility-panel button:focus {
+      background-color: var(--medium-light);
+      outline: none;
+    }
+
+    /* Main Section com flip cards */
+    .main-section {
+      margin-top: 80px;
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px;
+      user-select: none;
+    }
+
+    /* Left large flip card */
+    .left-large {
+      flex: 2;
+      cursor: pointer;
+      perspective: 1200px;
+      border-radius: 14px;
+      overflow: visible;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      border-radius: 14px;
+      height: 350px;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.7);
+      user-select: none;
+    }
+    .flip-card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      overflow: hidden;
+      color: var(--light);
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      box-sizing: border-box;
+      background-color: var(--medium);
+    }
+    .flip-card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0; left: 0;
+      z-index: 0;
+      border-radius: 14px;
+      user-select: none;
+      pointer-events: none;
+    }
+    .text-overlay {
+      position: relative;
+      z-index: 1;
+      background: rgba(10, 26, 23, 0.7);
+      padding: 10px 16px;
+      border-radius: 10px 10px 0 0;
+      width: 100%;
+      user-select: text;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1.5;
+      background-color: var(--dark);
+      padding-top: 30px;
+      text-align: justify;
+    }
+
+    /* Right small flip cards */
+    .right-small {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .right-small .image-box {
+      cursor: pointer;
+      perspective: 1000px;
+      border-radius: 14px;
+      overflow: visible;
+      height: 160px;
+    }
+    .right-small .flip-card-inner {
+      height: 100%;
+      border-radius: 14px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.7);
+    }
+    .right-small .flip-card-front, 
+    .right-small .flip-card-back {
+      font-size: 0.9rem;
+      padding: 12px 16px;
+      display: flex;
+      align-items: flex-end;
+      border-radius: 14px;
+      user-select: text;
+    }
+    .right-small .flip-card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0; left: 0;
+      border-radius: 14px;
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+    .text-overlay-small {
+      position: relative;
+      z-index: 1;
+      background: rgba(10, 26, 23, 0.7);
+      padding: 6px 12px;
+      border-radius: 10px 10px 0 0;
+      width: 100%;
+    }
+    .right-small .flip-card-back {
+      transform: rotateY(180deg);
+      background-color: var(--dark);
+      color: var(--light);
+      font-weight: 600;
+      text-align: justify;
+      align-items: flex-start;
+      padding-top: 20px;
+    }
+    .right-small .flip-card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Cards and curiosities */
+    .cards-and-curiosities {
+      max-width: 1200px;
+      margin: 30px auto 40px;
+      display: flex;
+      gap: 25px;
+      padding: 0 20px;
+      user-select: none;
+    }
+    .cards-section {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .card {
+      display: flex;
+      gap: 18px;
+      background-color: var(--medium);
+      padding: 15px;
+      border-radius: 14px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.7);
+      transition: background-color 0.3s;
+      cursor: default;
+    }
+    .card:hover {
+      background-color: var(--medium-light);
+    }
+    .card .image-box {
+      flex-shrink: 0;
+      width: 160px;
+      height: 120px;
+      overflow: hidden;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+      user-select: none;
+    }
+    .card .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      pointer-events: none;
+      border-radius: 14px;
+    }
+    .card .content {
+      flex-grow: 1;
+      color: var(--light);
+      font-size: 1rem;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* Curiosities */
+    .curiosities-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      user-select: text;
+    }
+    .curiosity {
+      padding: 12px 16px;
+      border-radius: 14px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.6);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .green-box {
+      background-color: var(--light);
+      color: var(--darkest);
+      font-weight: 700;
+      user-select: text;
+    }
+    .gray-box {
+      background-color: var(--dark);
+      color: var(--light);
+      user-select: text;
+    }
+
+    /* Rodapé */
+    footer {
+      background-color: var(--medium);
+      color: var(--light);
+      text-align: center;
+      padding: 18px 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      user-select: none;
+      box-shadow: inset 0 1px 3px rgba(255 255 255 / 0.2);
+    }
+
+    /* Alta contraste para acessibilidade */
+    .high-contrast {
+      background-color: black !important;
+      color: yellow !important;
+    }
+
+    /* Scrollbar acessibilidade */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--light);
+      border-radius: 6px;
+    }
+
+    /* Responsividade básica */
+    @media (max-width: 900px) {
+      .main-section {
+        flex-direction: column;
+        margin-top: 120px;
+      }
+      .right-small {
+        flex-direction: row;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .right-small .image-box {
+        flex: 1;
+        height: 180px;
+      }
+      .cards-and-curiosities {
+        flex-direction: column;
+        padding: 0 10px;
+      }
+      .cards-section, .curiosities-section {
+        flex: none;
+        width: 100%;
+      }
+      nav.nav-links {
+        display: none; /* simplificação para mobile */
+      }
+      .header-actions input[type="search"] {
+        width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-fixed" role="banner" aria-label="Cabeçalho principal">
+    <div class="header-container">
+      <div class="logo-title">
+        <img src="logo-agrinho.png" alt="Logo Agrinho" />
+        <h1>Festejando a Conexão Campo e Cidade</h1>
+      </div>
+
+      <nav class="nav-links" role="navigation" aria-label="Menu principal">
+        <a href="#" tabindex="0">Home Page</a>
+        <a href="#" tabindex="0">Sobre Nós</a>
+        <a href="#" tabindex="0">Calendário</a>
+        <a href="#" tabindex="0">Dólar</a>
+      </nav>
+
+      <div class="header-actions">
+        <input type="search" placeholder="Buscar..." aria-label="Buscar no site" />
+        <button class="btn-login" aria-label="Criar conta">Criar Conta</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Painel de acessibilidade fixo -->
+  <div id="accessibility-panel" aria-label="Painel de acessibilidade" role="region">
+    <button id="increase-font" aria-label="Aumentar fonte">A+</button>
+    <button id="decrease-font" aria-label="Diminuir fonte">A−</button>
+    <button id="toggle-contrast" aria-label="Alternar alto contraste">🌓</button>
+    <button id="reset-accessibility" aria-label="Resetar acessibilidade">⟳</button>
+  </div>
+
+  <!-- Seção principal com imagem grande e imagens pequenas -->
+  <main class="main-section" role="main">
+
+    <section class="left-large" tabindex="0" aria-label="Imagem principal com texto e descrição">
+      <div class="flip-card-inner" role="button" aria-pressed="false" tabindex="-1">
+        <div class="flip-card-front">
+          <img src="imagem grande.png" alt="Meio Urbano e Rural" />
+          <div class="text-overlay">Meio Urbano e Rural: Uma Bela Dualidade</div>
+        </div>
+        <div class="flip-card-back" tabindex="0">
+          A urbanização crescente tem causado um impacto significativo nas comunidades rurais, trazendo tanto desafios quanto novas oportunidades. Com o avanço das cidades, as áreas do campo passam por transformações que afetam a forma de vida tradicional, mas também abrem espaço para o desenvolvimento econômico e social. Essa dinâmica exige um equilíbrio cuidadoso entre preservar as raízes do campo e integrar as inovações urbanas, garantindo que tanto o meio rural quanto o urbano possam crescer de maneira sustentável e harmoniosa.
+        </div>
+      </div>
+    </section>
+
+    <section class="right-small" aria-label="Imagens menores com textos e descrições">
+      <div class="image-box" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="drone-no-campo.webp" alt="Tecnologia no campo" class="small-image" />
+            <div class="text-overlay-small">Tecnologia no campo: Inovação transforma a agricultura</div>
+          </div>
+          <div class="flip-card-back" tabindex="0">
+            O uso de drones e inteligência artificial está revolucionando a produção agrícola, aumentando a produtividade e a sustentabilidade.
+          </div>
+        </div>
+      </div>
+
+      <div class="image-box" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="caraimportante.webp" alt="Novas políticas públicas" class="small-image" />
+            <div class="text-overlay-small">Novas políticas públicas para desenvolvimento rural</div>
+          </div>
+          <div class="flip-card-back" tabindex="0">
+            Incentivos governamentais estão fortalecendo pequenas propriedades rurais e melhorando a infraestrutura local para melhorar a qualidade de vida.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Cards e Curiosidades -->
+  <div class="cards-and-curiosities" aria-label="Seção de cards e curiosidades">
+
+    <section class="cards-section" aria-label="Cards informativos">
+      <article class="card" tabindex="0">
+        <div class="image-box">
+          <img src="agronegocio.webp" alt="Agronegócio" />
+        </div>
+        <div class="content">
+          Projetos como o "Conexão Campo Cidade", promovido pelo Notícias Agrícolas, têm como objetivo integrar as cadeias produtivas e melhorar a comunicação entre produtores rurais e consumidores urbanos. Essas iniciativas ajudam a desmistificar a produção no campo e incentivam o consumo consciente de alimentos, fortalecendo a imagem do agronegócio brasileiro.
+        </div>
+      </article>
+
+      <article class="card" tabindex="0">
+        <div class="image-box">
+          <img src="morango.jpg" alt="Produção de morangos" />
+        </div>
+        <div class="content">
+          Apesar dos desafios, tenho percebido um movimento crescente de famílias urbanas retornando ao campo em busca de melhor qualidade de vida e novas oportunidades econômicas. Exemplos interessantes são a produção de morangos em Renascença (PR) e a fabricação de cachaça artesanal em Nova Prata do Iguaçu (PR), que além de gerar empregos, valorizam a agricultura sustentável.
+        </div>
+      </article>
+
+      <article class="card" tabindex="0">
+        <div class="image-box">
+          <img src="Agrinho_Experiencia_Pedagogica.jpeg" alt="Programa Agrinho" />
+        </div>
+        <div class="content">
+          Em 2024, o programa Agrinho premiou 2.600 estudantes do Paraná, incentivando a integração entre educação e agricultura. Os projetos vencedores abordaram temas importantes como empreendedorismo, a cadeia produtiva do milho e alimentação saudável, ajudando a ampliar a compreensão sobre a relação entre o campo e a cidade.
+        </div>
+      </article>
+    </section>
+
+    <aside class="curiosities-section" aria-label="Curiosidades sobre o tema">
+      <div class="curiosity green-box" tabindex="0">
+        Sabia que o Agrinho é um dos maiores programas de educação do Paraná, envolvendo milhares de alunos em projetos que conectam meio rural e urbano?
+      </div>
+      <div class="curiosity gray-box" tabindex="0">
+        O desenvolvimento do agronegócio contribui para mais de 20% do PIB brasileiro, mostrando a importância econômica do setor para o país.
+      </div>
+      <div class="curiosity green-box" tabindex="0">
+        Técnicas modernas de agricultura de precisão permitem reduzir o uso de água e insumos, preservando o meio ambiente.
+      </div>
+      <div class="curiosity gray-box" tabindex="0">
+        A tecnologia, como drones e IA, está cada vez mais presente na rotina dos produtores rurais, ajudando na tomada de decisões.
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    &copy; 2024 Criado por Seu Nome
+  </footer>
+
+  <script>
+    // Script para flip cards
+    document.querySelectorAll('.flip-card-inner').forEach(card => {
+      card.parentElement.addEventListener('click', () => {
+        card.classList.toggle('flipped');
+        const pressed = card.classList.contains('flipped');
+        card.parentElement.setAttribute('aria-pressed', pressed);
+      });
+      card.parentElement.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.classList.toggle('flipped');
+          const pressed = card.classList.contains('flipped');
+          card.parentElement.setAttribute('aria-pressed', pressed);
+        }
+      });
+    });
+
+    // Acessibilidade: aumentar, diminuir fonte e contraste
+    const root = document.documentElement;
+    let fontSize = 16;
+
+    document.getElementById('increase-font').addEventListener('click', () => {
+      if (fontSize < 22) {
+        fontSize += 2;
+        root.style.fontSize = fontSize + 'px';
+      }
+    });
+    document.getElementById('decrease-font').addEventListener('click', () => {
+      if (fontSize > 12) {
+        fontSize -= 2;
+        root.style.fontSize = fontSize + 'px';
+      }
+    });
+    document.getElementById('toggle-contrast').addEventListener('click', () => {
+      document.body.classList.toggle('high-contrast');
+    });
+    document.getElementById('reset-accessibility').addEventListener('click', () => {
+      fontSize = 16;
+      root.style.fontSize = fontSize + 'px';
+      document.body.classList.remove('high-contrast');
+    });
+  </script>
+
+</body>
+</html>
